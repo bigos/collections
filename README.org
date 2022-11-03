@@ -1,0 +1,5 @@
+* Collections
+
+Critiques wanted! Please review my project and submit an issue when you see
+something needs improving. I am trying to improve my Elm skills and your help
+would be appreciated.
