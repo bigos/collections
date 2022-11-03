@@ -1,16 +1,15 @@
 module Collections exposing (..)
 
-import Array
 import Browser
-import Date exposing (Date, Unit(..), diff, fromCalendarDate, month, weekday, year)
+import Date exposing (Date, Unit(..), fromCalendarDate, weekday)
 import DatePicker exposing (DateEvent(..), defaultSettings)
-import Html exposing (Html, a, br, button, div, form, h1, h3, hr, img, input, li, option, p, select, span, table, td, text, textarea, th, tr, ul)
-import Html.Attributes exposing (action, attribute, checked, href, id, max, method, min, name, placeholder, readonly, src, style, target, type_, value)
-import Html.Events exposing (onClick, onInput, preventDefaultOn)
+import Html exposing (Html, a, br, button, div, img, input, option, p, select, span, text, textarea)
+import Html.Attributes exposing (src, style, type_, value)
+import Html.Events exposing (onClick, onInput)
 import Http
 import Json.Decode as D
 import Json.Encode as E
-import Task exposing (perform)
+import Task
 import Time exposing (Month(..), Weekday(..))
 
 
@@ -106,7 +105,7 @@ type alias Model =
 init : D.Value -> ( Model, Cmd Msg )
 init flags_json =
     let
-        unusedVariable =
+        _ =
             "this is not used and should be picked up"
 
         parsed_flags =
@@ -470,7 +469,7 @@ viewBranchSelector model =
         [] ->
             p [] [ text "Error, we expect to see a branch here." ]
 
-        [ branch ] ->
+        [ _ ] ->
             p []
                 [-- text "will hide branch selector"
                 ]
