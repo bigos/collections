@@ -1,3 +1,3 @@
 #!/bin/bash
 
-elm make ./Collections.elm  --output collections.js
+elm make ./src/Collections.elm  --output collections.js
