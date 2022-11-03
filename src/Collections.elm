@@ -74,7 +74,7 @@ type alias Entered =
 
 emptyEntered : Flags -> Entered
 emptyEntered flags =
-    { boxes = 0
+    { boxes = 1
     , date = ""
     , address = ""
     , postcode = ""
@@ -263,7 +263,7 @@ update msg model =
             ( { model
                 | entered =
                     { newEntered
-                        | boxes = Maybe.withDefault 0 (String.toInt str)
+                        | boxes = Maybe.withDefault 1 (String.toInt str)
                     }
               }
             , Cmd.none
@@ -567,6 +567,7 @@ viewValid model =
             , br [] []
             , input
                 [ type_ "number"
+                , value (String.fromInt model.entered.boxes)
                 , Html.Attributes.min
                     "1"
                 , Html.Attributes.max
@@ -574,7 +575,16 @@ viewValid model =
                 , onInput SetBoxes
                 ]
                 []
-            , span [] [ text " boxes " ]
+            , span []
+                [ text
+                    (case model.entered.boxes of
+                        1 ->
+                            " box"
+
+                        _ ->
+                            " boxes"
+                    )
+                ]
             , br [] []
             , span [] [ text "on" ]
             , br [] []
