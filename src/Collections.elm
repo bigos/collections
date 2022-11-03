@@ -462,6 +462,7 @@ compareBranchesForSort a b =
     compare (branchOptionString a) (branchOptionString b)
 
 
+viewBranchSelector : { a | flags : { b | branches : List Branch } } -> Html Msg
 viewBranchSelector model =
     case model.flags.branches of
         [] ->
@@ -475,8 +476,8 @@ viewBranchSelector model =
         _ ->
             div []
                 [ select [ onInput SelectBranchOption ]
-                    ([ option [ value "0" ] [ text "Please select the branch address..." ] ]
-                        ++ List.map
+                    (option [ value "0" ] [ text "Please select the branch address..." ]
+                        :: List.map
                             (\branch ->
                                 option
                                     [ value <| String.fromInt branch.branch_id
@@ -515,6 +516,7 @@ dateValidation today date =
                         "Please pick valid date between 1 and 31 days from today"
 
 
+datePickerWidget : { a | today : Maybe Date, date : Maybe Date, datePicker : DatePicker.DatePicker } -> Html Msg
 datePickerWidget model =
     div []
         [ p [] [ text (dateValidation model.today model.date) ]
