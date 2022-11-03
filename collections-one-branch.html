@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Collections experiment</title>
+  <link rel="stylesheet" href="./elm-datepicker.css">
+</head>
+<body>
+
+  <div>
+    <p>This is Collections experiment</p>
+  </div>
+
+  <div id="elm_collections">We have Elm JavaScript Error</div>
+
+  <script src="collections.js"></script>
+  <script>
+    var cnode = document.getElementById("elm_collections")
+    if (cnode) {
+        Elm.Collections.init({
+            node: cnode,
+            flags:
+            {
+                user_full_name: "Me Myself",
+                user_email: "me@example.com",
+                contact_id: 1234,
+                branch_id: 5678,
+                branches: [{"branch_id":1234,
+                            "name": "My Branch 1",
+                            "address": "123 My Street, Someville",
+                            "postcode": "AB C12",
+                            "phone": "01234567"}
+                          ],
+                status: "Ok" }
+        });
+    };
+  </script>
+
+</body>
+</html>
