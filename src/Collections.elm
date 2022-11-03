@@ -73,6 +73,7 @@ type alias Entered =
     }
 
 
+emptyEntered : Flags -> Entered
 emptyEntered flags =
     { boxes = 0
     , date = ""
