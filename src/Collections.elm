@@ -106,9 +106,6 @@ type alias Model =
 init : D.Value -> ( Model, Cmd Msg )
 init flags_json =
     let
-        _ =
-            "this is not used and should be picked up"
-
         parsed_flags =
             case D.decodeValue flagsDecoder flags_json of
                 Err err ->
