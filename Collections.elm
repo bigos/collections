@@ -2,7 +2,7 @@ module Collections exposing (..)
 
 import Array exposing (..)
 import Browser
-import Date exposing (Date, Unit(..), day, diff, fromCalendarDate, month, weekday, year)
+import Date exposing (Date, Unit(..), diff, fromCalendarDate, month, weekday, year)
 import DatePicker exposing (DateEvent(..), defaultSettings)
 import Html exposing (Html, a, br, button, div, form, h1, h3, hr, img, input, li, option, p, select, span, table, td, text, textarea, th, tr, ul)
 import Html.Attributes exposing (action, attribute, checked, href, id, max, method, min, name, placeholder, readonly, src, style, target, type_, value)
