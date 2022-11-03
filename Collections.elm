@@ -446,13 +446,15 @@ badFlagsWarning model =
 
 
 branchOptionString branch =
-    branch.name
-        ++ " - "
-        ++ branch.address
-        ++ ", "
-        ++ branch.postcode
-        ++ " - "
-        ++ branch.phone
+    String.concat
+        [ branch.name
+        , " - "
+        , branch.address
+        , ", "
+        , branch.postcode
+        , " - "
+        , branch.phone
+        ]
 
 
 compareBranchesForSort : Branch -> Branch -> Order
