@@ -1,6 +1,6 @@
 module Collections exposing (..)
 
-import Array exposing (..)
+import Array
 import Browser
 import Date exposing (Date, Unit(..), diff, fromCalendarDate, month, weekday, year)
 import DatePicker exposing (DateEvent(..), defaultSettings)
@@ -95,7 +95,6 @@ type SubmissionStatus
 
 type alias Model =
     { flags : Flags
-    , currentTime : Int
     , entered : Entered
     , today : Maybe Date
     , date : Maybe Date
@@ -126,7 +125,6 @@ init flags_json =
             DatePicker.init
     in
     ( { flags = parsed_flags
-      , currentTime = 3
       , entered = emptyEntered parsed_flags
       , today = Nothing
       , date = Nothing
@@ -158,30 +156,30 @@ type EnteredBox
 resetEnteredBranch model =
     { model
         | entered =
-            Entered
-                model.entered.boxes
-                model.entered.date
-                ""
-                ""
-                ""
-                model.entered.contact
-                ""
-                model.entered.notes
+            { boxes = model.entered.boxes
+            , date = model.entered.date
+            , address = ""
+            , postcode = ""
+            , name = ""
+            , contact = model.entered.contact
+            , phone = ""
+            , notes = model.entered.notes
+            }
     }
 
 
 updateEnteredBranch model branch =
     { model
         | entered =
-            Entered
-                model.entered.boxes
-                model.entered.date
-                branch.address
-                branch.postcode
-                branch.name
-                model.entered.contact
-                branch.phone
-                model.entered.notes
+            { boxes = model.entered.boxes
+            , date = model.entered.date
+            , address = branch.address
+            , postcode = branch.postcode
+            , name = branch.name
+            , contact = model.entered.contact
+            , phone = branch.phone
+            , notes = model.entered.notes
+            }
     }
 
 
