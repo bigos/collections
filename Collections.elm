@@ -184,16 +184,16 @@ updateEnteredBranch model branch =
 
 
 updateTheRest model =
-    if List.length model.flags.branches == 1 then
-        case List.head model.flags.branches of
-            Nothing ->
-                model
+    case model.flags.branches of
+        [] ->
+            model
 
-            Just branch ->
-                updateEnteredBranch model branch
+        -- list of 2 or more elements
+        _ :: _ :: _ ->
+            model
 
-    else
-        model
+        [ branch ] ->
+            updateEnteredBranch model branch
 
 
 updateDatePicker datePickerCmd model =
