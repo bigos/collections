@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <title>Collections experiment</title>
+
+          <link rel="stylesheet" href="./elm-datepicker.css">
+
+</head>
+<body>
+
+  <div>
+    <p>This is Collections experiment</p>
+  </div>
+
+  <div id="elm_collections">We have Elm JavaScript Error</div>
+
+  <script src="collections.js"></script>
+  <script>
+    var cnode = document.getElementById("elm_collections")
+    if (cnode) {
+        Elm.Collections.init({
+            node: cnode,
+            flags:
+            {
+                user_full_name: "Me Myself",
+                user_email: "me@example.com",
+                contact_id: 1234,
+                branch_id: 5678,
+                branches: [{"branch_id":1234,
+                            "name": "My Branch 1",
+                            "address": "123 My Street, Someville",
+                            "postcode": "AB C12",
+                            "phone": "01234567"},
+                           {"branch_id":1235,
+                            "name": "My Branch 2",
+                            "address": "456 My Street, Someville",
+                            "postcode": "AB C12",
+                            "phone": "01234568"},
+                           {"branch_id":12346,
+                            "name": "My Branch 3",
+                            "address": "789 My Street, Someville",
+                            "postcode": "AB C12",
+                            "phone": "01234569"}
+                          ],
+                status: "Ok" }
+        });
+    };
+  </script>
+
+</body>
+</html>
