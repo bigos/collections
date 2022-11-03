@@ -461,26 +461,30 @@ compareBranchesForSort a b =
 
 
 viewBranchSelector model =
-    if List.length model.flags.branches == 1 then
-        p []
-            [-- text "will hide branch selector"
-            ]
+    case model.flags.branches of
+        [] ->
+            p [] [ text "Error, we expect to see a branch here." ]
 
-    else
-        div []
-            [ select [ onInput SelectBranchOption ]
-                ([ option [ value "0" ] [ text "Please select the branch address..." ] ]
-                    ++ List.map
-                        (\branch ->
-                            option
-                                [ value <| String.fromInt branch.branch_id
-                                ]
-                                [ text <| branchOptionString branch
-                                ]
-                        )
-                        (List.sortWith compareBranchesForSort model.flags.branches)
-                )
-            ]
+        [ branch ] ->
+            p []
+                [-- text "will hide branch selector"
+                ]
+
+        _ ->
+            div []
+                [ select [ onInput SelectBranchOption ]
+                    ([ option [ value "0" ] [ text "Please select the branch address..." ] ]
+                        ++ List.map
+                            (\branch ->
+                                option
+                                    [ value <| String.fromInt branch.branch_id
+                                    ]
+                                    [ text <| branchOptionString branch
+                                    ]
+                            )
+                            (List.sortWith compareBranchesForSort model.flags.branches)
+                    )
+                ]
 
 
 dateValidation : Model -> String
