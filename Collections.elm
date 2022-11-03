@@ -235,7 +235,7 @@ type Msg
     | ToDatePicker DatePicker.Msg
     | SetBoxes String
     | SetEntered EnteredBox String
-    | SubmitForm
+    | PressedSubmit
     | SubmittedForm (Result Http.Error String)
     | SelectBranchOption String
 
@@ -316,7 +316,7 @@ update msg model =
         ToDatePicker subMsg ->
             ( updateDatePicker subMsg model, Cmd.none )
 
-        SubmitForm ->
+        PressedSubmit ->
             ( { model | submissionStatus = Submission }, submitForm model )
 
         SubmittedForm result ->
@@ -628,7 +628,7 @@ buttonAndSubmission model =
     case model.submissionStatus of
         Editing ->
             div []
-                [ button [ onClick SubmitForm ] [ text "Submit Collection Request" ]
+                [ button [ onClick PressedSubmit ] [ text "Submit Collection Request" ]
                 ]
 
         Submission ->
