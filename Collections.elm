@@ -489,9 +489,9 @@ viewBranchSelector model =
                 ]
 
 
-dateValidation : Model -> String
-dateValidation model =
-    case model.today of
+dateValidation : Maybe Date -> Maybe Date -> String
+dateValidation today date =
+    case today of
         Nothing ->
             "We did not expect lack of today's date"
 
@@ -503,7 +503,7 @@ dateValidation model =
                 endDate =
                     Date.add Days 31 todaysDate
             in
-            case model.date of
+            case date of
                 Nothing ->
                     "please select date"
 
@@ -517,7 +517,7 @@ dateValidation model =
 
 datePickerWidget model =
     div []
-        [ p [] [ text (dateValidation model) ]
+        [ p [] [ text (dateValidation model.today model.date) ]
         , case model.date of
             Nothing ->
                 span [] [ text "Pick collection date" ]
