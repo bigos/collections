@@ -3,7 +3,7 @@ module Collections exposing (..)
 import Browser
 import Date exposing (Date, Unit(..), fromCalendarDate, weekday)
 import DatePicker exposing (DateEvent(..), defaultSettings)
-import Html exposing (Html, a, br, button, div, img, input, option, p, select, span, text, textarea)
+import Html exposing (Html, br, button, div, img, input, option, p, select, span, text, textarea)
 import Html.Attributes exposing (src, style, type_, value)
 import Html.Events exposing (onClick, onInput)
 import Http
@@ -15,7 +15,6 @@ import Time exposing (Month(..), Weekday(..))
 
 
 -- MAIN
---main : Program Int Model Msg
 
 
 main =
@@ -228,10 +227,8 @@ updateDatePicker datePickerCmd model =
 
 
 type Msg
-    = NoOp
-    | TodaysDateReceived Date
+    = TodaysDateReceived Date
     | InitAll DatePicker.Msg
-    | PrefillBranch Branch
     | ToDatePicker DatePicker.Msg
     | SetBoxes String
     | SetEntered EnteredBox String
@@ -243,9 +240,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        NoOp ->
-            ( model, Cmd.none )
-
         InitAll datePickerCmd ->
             ( -- update model at multiple stages
               model |> updateDatePicker datePickerCmd |> updateTheRest
@@ -305,11 +299,6 @@ update msg model =
                                 | notes = str
                             }
               }
-            , Cmd.none
-            )
-
-        PrefillBranch branch ->
-            ( updateEnteredBranch model branch
             , Cmd.none
             )
 
@@ -445,6 +434,7 @@ badFlagsWarning model =
         span [] []
 
 
+branchOptionString : Branch -> String
 branchOptionString branch =
     String.concat
         [ branch.name
