@@ -152,6 +152,7 @@ type EnteredBox
     | Phone
 
 
+resetEnteredBranch : Model -> Model
 resetEnteredBranch model =
     { model
         | entered =
@@ -167,6 +168,7 @@ resetEnteredBranch model =
     }
 
 
+updateEnteredBranch : Model -> Branch -> Model
 updateEnteredBranch model branch =
     { model
         | entered =
@@ -182,6 +184,7 @@ updateEnteredBranch model branch =
     }
 
 
+updateTheRest : Model -> Model
 updateTheRest model =
     case model.flags.branches of
         [] ->
@@ -195,6 +198,7 @@ updateTheRest model =
             updateEnteredBranch model branch
 
 
+updateDatePicker : DatePicker.Msg -> Model -> Model
 updateDatePicker datePickerCmd model =
     let
         ( newDatePicker, dateEvent ) =
