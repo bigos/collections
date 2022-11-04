@@ -577,12 +577,11 @@ viewValid model =
                 []
             , span []
                 [ text
-                    (case model.entered.boxes of
-                        1 ->
-                            " box"
+                    (if model.entered.boxes == 1 then
+                        "box"
 
-                        _ ->
-                            " boxes"
+                     else
+                        "boxes"
                     )
                 ]
             , br [] []
