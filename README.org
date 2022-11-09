@@ -3,3 +3,13 @@
 Critiques wanted! Please review my project and submit an issue when you see
 something needs improving. I am trying to improve my Elm skills and your help
 would be appreciated.
+
+
+** Elm review
+
+We can run checks on the project.
+
+#+begin_example
+  npx elm-review --template jfmengels/elm-review-unused/example
+  npx elm-review --template jfmengels/elm-review-simplify/example
+#+end_example
