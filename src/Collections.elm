@@ -410,9 +410,37 @@ branchDecoder =
 -- VIEW
 
 
+boxCollectionLimit : Int
+boxCollectionLimit =
+    9
+
+
+largeOrderWarning : Model -> Html Msg
+largeOrderWarning model =
+    if model.entered.boxes > 5 then
+        span
+            [ style "background" "yellow"
+            , style "padding" "0.25em"
+            , style "margin-left" "2em"
+            ]
+            [ text
+                ("For large orders, "
+                    ++ String.fromInt (boxCollectionLimit + 1)
+                    ++ " or more, please contact our Customer Service"
+                )
+            ]
+
+    else
+        span [] []
+
+
 modelDebug : Model -> Html Msg
 modelDebug model =
-    if True then
+    let
+        debugMe =
+            False
+    in
+    if debugMe then
         p [ style "background" "yellow" ]
             [ text
                 ("model debug will go here"
@@ -470,7 +498,7 @@ viewBranchSelector model =
         _ ->
             div []
                 [ select [ onInput SelectBranchOption ]
-                    (option [ value "0" ] [ text "Please select the branch address..." ]
+                    (option [ value "0" ] [ text "Please select the collection address..." ]
                         :: List.map
                             (\branch ->
                                 option
@@ -484,11 +512,14 @@ viewBranchSelector model =
                 ]
 
 
-dateValidation : Maybe Date -> Maybe Date -> String
-dateValidation today date =
-    case today of
+
+--isDateValid : Model -> Bool
+
+
+isDateValid model =
+    case model.today of
         Nothing ->
-            "We did not expect lack of today's date"
+            False
 
         Just todaysDate ->
             let
@@ -496,27 +527,73 @@ dateValidation today date =
                     Date.add Days 1 todaysDate
 
                 endDate =
-                    Date.add Days 31 todaysDate
+                    -- in two weeks
+                    Date.add Days (1 + 14) todaysDate
             in
-            case date of
+            case model.date of
                 Nothing ->
-                    "please select date"
+                    False
+
+                Just pickedDate ->
+                    Date.isBetween startDate endDate pickedDate
+
+
+validDateRange : Model -> String
+validDateRange model =
+    case model.today of
+        Nothing ->
+            ""
+
+        Just todaysDate ->
+            let
+                startDate =
+                    Date.add Days 1 todaysDate
+
+                endDate =
+                    -- in two weeks
+                    Date.add Days (1 + 14) todaysDate
+            in
+            case model.date of
+                Nothing ->
+                    ""
 
                 Just pickedDate ->
                     if Date.isBetween startDate endDate pickedDate then
-                        "we have valid date"
+                        ""
 
                     else
-                        "Please pick valid date between 1 and 31 days from today"
+                        "Please pick a date between "
+                            ++ Date.format dateFormat startDate
+                            ++ " and "
+                            ++ Date.format dateFormat endDate
 
 
-datePickerWidget : { a | today : Maybe Date, date : Maybe Date, datePicker : DatePicker.DatePicker } -> Html Msg
+redAsterix : Html Msg
+redAsterix =
+    span [ style "color" "red" ] [ text " *" ]
+
+
+datePickerWidget : Model -> Html Msg
 datePickerWidget model =
     div []
-        [ p [] [ text (dateValidation model.today model.date) ]
+        [ if isDateValid model then
+            p [] []
+
+          else
+            case model.date of
+                Nothing ->
+                    p [] []
+
+                Just _ ->
+                    p []
+                        [ span [ style "background" "yellow", style "padding" "0.25em" ]
+                            [ text
+                                (validDateRange model)
+                            ]
+                        ]
         , case model.date of
             Nothing ->
-                span [] [ text "Pick collection date" ]
+                span [] [ text "Collection Date", redAsterix ]
 
             Just date ->
                 span [] [ text <| Date.format dateFormat date ]
@@ -545,10 +622,18 @@ view model =
 viewValid : Model -> Html Msg
 viewValid model =
     let
-        brSpanBr wording =
+        brSpanBr : String -> Bool -> Html Msg
+        brSpanBr wording required =
             span []
                 [ br [] []
-                , span [] [ text wording ]
+                , span []
+                    [ text wording
+                    , if required then
+                        redAsterix
+
+                      else
+                        text ""
+                    ]
                 , br [] []
                 ]
     in
@@ -571,27 +656,29 @@ viewValid model =
                 , Html.Attributes.min
                     "1"
                 , Html.Attributes.max
-                    "100"
+                    (String.fromInt boxCollectionLimit)
                 , onInput SetBoxes
                 ]
                 []
             , span []
                 [ text
-                    (case model.entered.boxes of
-                        1 ->
-                            " box"
+                    (" "
+                        ++ (if model.entered.boxes == 1 then
+                                "box"
 
-                        _ ->
-                            " boxes"
+                            else
+                                "boxes"
+                           )
                     )
                 ]
+            , largeOrderWarning model
             , br [] []
             , span [] [ text "on" ]
             , br [] []
             , datePickerWidget model
             , br [] []
             , viewBranchSelector model
-            , span [] [ text "company name" ]
+            , span [] [ text "Company Name" ]
             , br [] []
             , input
                 [ style "min-width" "25em"
@@ -601,7 +688,7 @@ viewValid model =
                 ]
                 []
             , br [] []
-            , span [] [ text "collection address" ]
+            , span [] [ text "Collection Address", redAsterix ]
             , br [] []
             , textarea
                 [ style "min-width" "35em"
@@ -611,14 +698,14 @@ viewValid model =
                 , onInput (SetEntered Address)
                 ]
                 []
-            , brSpanBr "postcode"
+            , brSpanBr "Postcode" True
             , input [ value model.entered.postcode, onInput (SetEntered Postcode) ] []
-            , brSpanBr "contact"
+            , brSpanBr "Contact" True
             , input [ value model.entered.contact, onInput (SetEntered Contact) ] []
-            , brSpanBr "phone"
+            , brSpanBr "Phone" True
             , input [ value model.entered.phone, onInput (SetEntered Phone) ] []
             , br [] []
-            , brSpanBr "additional notes"
+            , brSpanBr "Additional Notes" False
             , textarea
                 [ style "min-width" "35em"
                 , style "min-height" "4em"
@@ -631,12 +718,78 @@ viewValid model =
         ]
 
 
+
+-- mandatory:  collection date, address, postcode, contact, phone
+
+
+missingReqiredCheck : Model -> List String
+missingReqiredCheck model =
+    let
+        needed =
+            [ ( model.date == Nothing, "Collection Date" )
+            , ( model.entered.address == "", "Collection Address" )
+            , ( model.entered.postcode == "", "Postcode" )
+            , ( model.entered.contact == "", "Contact" )
+            , ( model.entered.phone == "", "Phone" )
+            ]
+    in
+    List.foldr
+        (\t a ->
+            if Tuple.first t then
+                Tuple.second t :: a
+
+            else
+                a
+        )
+        []
+        needed
+
+
 buttonAndSubmission : Model -> Html Msg
 buttonAndSubmission model =
+    let
+        missing =
+            missingReqiredCheck model
+
+        dateValid =
+            isDateValid model
+    in
     case model.submissionStatus of
         Editing ->
             div []
-                [ button [ onClick PressedSubmit ] [ text "Submit Collection Request" ]
+                [ if List.isEmpty missing && dateValid then
+                    button [ onClick PressedSubmit ] [ text "Submit Collection Request" ]
+
+                  else
+                    p [ style "background" "red", style "color" "white", style "padding" "1em" ]
+                        [ text
+                            ((if List.isEmpty missing then
+                                ""
+
+                              else
+                                "The following required fields "
+                                    ++ (if List.length missing == 1 then
+                                            "is"
+
+                                        else
+                                            "are"
+                                       )
+                                    ++ " missing "
+                                    ++ List.foldl (\e a -> a ++ e ++ ", ") "" missing
+                             )
+                                ++ (case model.date of
+                                        Nothing ->
+                                            ""
+
+                                        Just _ ->
+                                            if dateValid then
+                                                ""
+
+                                            else
+                                                "The date must be in valid range "
+                                   )
+                            )
+                        ]
                 ]
 
         Submission ->
